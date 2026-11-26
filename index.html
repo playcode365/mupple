@@ -2,47 +2,551 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>머플 지원</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>머플 — 우리 집 자산과 현금흐름을 가족이 함께</title>
+<meta name="description" content="머플(Mupple · モプル)은 부부와 가족이 함께 쓰는 자산·현금흐름 대시보드예요. 순자산과 이번 달 저축률을 한눈에 보고, 한 사람이 기록하면 가족 모두의 iPhone, iPad, Mac에 바로 맞춰져요.">
+<link rel="canonical" href="https://playcode365.com/mupple/">
+<meta name="theme-color" content="#0a0d18">
+<meta name="apple-itunes-app" content="app-id=6833055435">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayCode365">
+<meta property="og:title" content="머플 — 우리 집 자산과 현금흐름을 가족이 함께">
+<meta property="og:description" content="순자산과 이번 달 저축률을 한눈에. 한 사람이 기록하면 가족 모두의 iPhone, iPad, Mac에 바로 맞춰져요.">
+<meta property="og:url" content="https://playcode365.com/mupple/">
+<meta property="og:image" content="https://playcode365.com/mupple/assets/og.png">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root { color-scheme: light dark; --bg: #f2f2f4; --panel: #ffffff; --text: #1d1d1f; --muted: #6e6e73; --line: rgba(0,0,0,.08); --accent: #c24400; }
-@media (prefers-color-scheme: dark) { :root { --bg: #0b0b0c; --panel: #1c1c1e; --text: #f5f5f7; --muted: #98989d; --line: rgba(255,255,255,.1); --accent: #ff7a1a; } }
+:root {
+  color-scheme: dark;
+  --bg: #07090f;
+  --sky: #0d1226;
+  --panel: rgba(255,255,255,.055);
+  --panel-strong: rgba(255,255,255,.085);
+  --line: rgba(255,255,255,.10);
+  --text: #f5f5f7;
+  --muted: rgba(245,245,247,.70);
+  --faint: rgba(245,245,247,.48);
+  --accent: #ff8a2b;
+  --moon: #ffd9a8;
+  --radius: 28px;
+  --wrap: 1160px;
+}
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
-main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
-header { margin-bottom: 24px; }
-header a { color: var(--muted); text-decoration: none; font-size: 14px; }
-h1 { font-size: 28px; line-height: 1.3; margin: 8px 0 4px; }
-h2 { font-size: 18px; margin: 32px 0 8px; }
-p, li { color: var(--text); }
-ul { padding-left: 20px; }
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
-.muted { color: var(--muted); font-size: 14px; }
-a { color: var(--accent); }
-nav.links { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-nav.links a { display: block; padding: 16px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; color: var(--text); text-decoration: none; font-weight: 600; }
-footer { margin-top: 40px; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 17px/1.65 "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", system-ui, sans-serif;
+  letter-spacing: -0.01em; word-break: keep-all; overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+}
+img, video { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Night sky */
+.sky { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60vmax 50vmax at 85% -10%, rgba(255,190,120,.16), transparent 60%),
+    radial-gradient(50vmax 40vmax at 0% 30%, rgba(70,90,190,.20), transparent 60%),
+    linear-gradient(180deg, var(--sky) 0%, var(--bg) 70%); }
+.sky::before { content: ""; position: absolute; inset: 0; opacity: .55;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 28% 62%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 46% 12%, #fff, transparent),
+    radial-gradient(1px 1px at 64% 38%, #fff, transparent),
+    radial-gradient(1px 1px at 78% 72%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 90% 22%, #fff, transparent),
+    radial-gradient(1px 1px at 8% 84%, #fff, transparent),
+    radial-gradient(1px 1px at 54% 88%, #fff, transparent),
+    radial-gradient(1px 1px at 36% 32%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 70% 8%, rgba(255,255,255,.7), transparent); }
+
+/* Nav */
+.nav { position: sticky; top: 0; z-index: 20; backdrop-filter: saturate(160%) blur(18px); -webkit-backdrop-filter: saturate(160%) blur(18px);
+  background: rgba(7,9,15,.55); border-bottom: 1px solid transparent; transition: border-color .3s; }
+.nav.scrolled { border-bottom-color: var(--line); }
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; font-size: 18px; }
+.brand img { width: 32px; height: 32px; border-radius: 8px; }
+.brand small { font-weight: 500; color: var(--faint); font-size: 13px; }
+.nav-links { display: flex; gap: 22px; margin-left: auto; font-size: 15px; }
+.nav-links a { text-decoration: none; color: var(--muted); }
+.nav-links a:hover { color: var(--text); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px;
+  font-weight: 650; font-size: 15px; text-decoration: none; transition: transform .15s ease, background .2s ease; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: #f5f5f7; color: #0a0b10; }
+.btn-primary:hover { background: #fff; }
+.btn-glass { background: var(--panel-strong); border: 1px solid var(--line); color: var(--text); }
+.btn-glass:hover { background: rgba(255,255,255,.12); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 760px) { .nav-links { display: none; } .nav .btn { margin-left: auto; padding: 0 16px; } }
+
+/* Hero */
+.hero { padding: 72px 0 96px; }
+.hero .wrap { display: grid; grid-template-columns: 1.08fr .92fr; gap: 48px; align-items: center; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--moon);
+  padding: 6px 14px; border-radius: 999px; background: rgba(255,200,140,.08); border: 1px solid rgba(255,200,140,.18); }
+.eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+h1 { font-size: clamp(40px, 6.2vw, 76px); line-height: 1.08; letter-spacing: -0.035em; margin: 22px 0 20px; font-weight: 750; }
+h1 .soft { color: var(--moon); }
+.lede { font-size: clamp(17px, 1.6vw, 20px); color: var(--muted); max-width: 30em; margin: 0 0 32px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.platforms { margin-top: 22px; font-size: 14px; color: var(--faint); }
+.hero-visual { position: relative; display: flex; justify-content: center; }
+.journey { position: absolute; width: 40%; left: -6%; bottom: -6%; z-index: 2; filter: drop-shadow(0 20px 40px rgba(0,0,0,.5)); }
+.moonglow { position: absolute; inset: 8% 4% auto auto; width: 70%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,200,140,.28), transparent 65%); filter: blur(10px); }
+
+/* Phone */
+.phone { position: relative; width: min(330px, 78vw); aspect-ratio: 600 / 1304; border-radius: 52px; padding: 10px;
+  background: linear-gradient(160deg, #3a3c44, #15161b 40%, #2a2b31); box-shadow: 0 40px 100px rgba(0,0,0,.6), inset 0 0 0 1.5px rgba(255,255,255,.12); }
+.phone > video, .phone > img { width: 100%; height: 100%; object-fit: cover; border-radius: 43px; background: #0b0d16; }
+.phone.sm { width: min(280px, 70vw); border-radius: 44px; padding: 8px; }
+.phone.sm > img { border-radius: 37px; }
+.video-toggle { position: absolute; right: -8px; bottom: 26px; z-index: 3; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line);
+  background: rgba(20,22,30,.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--text); cursor: pointer; display: grid; place-items: center; }
+.video-toggle svg { width: 16px; height: 16px; }
+.video-toggle svg[hidden] { display: none; }
+
+/* Sections */
+section { padding: 96px 0; }
+.kicker { font-size: 14px; font-weight: 650; color: var(--accent); letter-spacing: .02em; margin: 0 0 12px; }
+h2 { font-size: clamp(30px, 4.2vw, 50px); line-height: 1.16; letter-spacing: -0.03em; margin: 0 0 18px; font-weight: 720; }
+.sub { color: var(--muted); font-size: clamp(16px, 1.5vw, 19px); max-width: 36em; margin: 0; }
+.center { text-align: center; }
+.center .sub { margin: 0 auto; }
+
+.glass { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+
+/* Values */
+.values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+.value { padding: 30px 28px 32px; }
+.value .no { font-size: 13px; font-weight: 650; color: var(--faint); }
+.value h3 { font-size: 22px; line-height: 1.35; margin: 14px 0 10px; letter-spacing: -0.02em; }
+.value p { margin: 0; color: var(--muted); font-size: 16px; }
+
+/* Video section */
+.film { display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: center; }
+.film-steps { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 10px; }
+.film-steps li { display: flex; gap: 12px; align-items: baseline; color: var(--muted); }
+.film-steps b { color: var(--text); font-weight: 650; min-width: 5.5em; }
+
+/* Features */
+.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding: 56px 0; }
+.feature + .feature { border-top: 1px solid var(--line); }
+.feature.flip .feature-text { order: 2; }
+.feature-visual { display: flex; justify-content: center; position: relative; }
+.feature-visual::before { content: ""; position: absolute; width: 70%; aspect-ratio: 1; top: 15%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(120,140,255,.16), transparent 65%); }
+.feature-visual .phone { z-index: 1; }
+.feature h3 { font-size: clamp(26px, 3vw, 36px); line-height: 1.22; letter-spacing: -0.025em; margin: 0 0 14px; }
+.feature p { color: var(--muted); margin: 0 0 18px; }
+.ticks { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.ticks li { position: relative; padding-left: 22px; color: var(--text); font-size: 16px; }
+.ticks li::before { content: ""; position: absolute; left: 2px; top: .68em; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.55); }
+.tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); vertical-align: 3px; margin-left: 6px; }
+
+/* More grid */
+.more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 44px; }
+.more .glass { padding: 24px; }
+.more h4 { margin: 0 0 6px; font-size: 17px; }
+.more p { margin: 0; color: var(--muted); font-size: 15px; }
+
+/* How */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 44px; counter-reset: s; }
+.step { padding: 28px; }
+.step::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--line); font-weight: 700; font-size: 15px; margin-bottom: 18px; }
+.step h4 { margin: 0 0 8px; font-size: 19px; }
+.step p { margin: 0; color: var(--muted); font-size: 15px; }
+
+/* Plans */
+.plans { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 44px; max-width: 880px; margin-left: auto; margin-right: auto; }
+.plan { padding: 32px; }
+.plan.pro { background: linear-gradient(160deg, rgba(255,170,100,.10), rgba(255,255,255,.04) 55%); border-color: rgba(255,190,130,.25); }
+.plan h3 { margin: 0; font-size: 22px; }
+.price { font-size: 34px; font-weight: 720; letter-spacing: -0.02em; margin: 10px 0 2px; }
+.price small { font-size: 16px; font-weight: 500; color: var(--muted); }
+.plan .note { color: var(--faint); font-size: 14px; margin: 0 0 20px; }
+.fineprint { max-width: 880px; margin: 18px auto 0; color: var(--faint); font-size: 13px; text-align: center; }
+
+/* Support */
+.support { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-top: 40px; }
+.support .glass { padding: 26px; }
+.support h3 { margin: 0 0 8px; font-size: 18px; }
+.support p { margin: 0; color: var(--muted); font-size: 15px; }
+.support a { color: var(--moon); }
+.legal-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+
+/* Final CTA */
+.final { text-align: center; padding: 120px 0 110px; }
+.final img { width: 96px; height: 96px; border-radius: 22px; margin: 0 auto 26px; box-shadow: 0 20px 60px rgba(255,170,90,.25); }
+.final .cta { justify-content: center; }
+
+footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--faint); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+footer nav { display: flex; gap: 18px; margin-left: auto; flex-wrap: wrap; }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--text); }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+.no-js .reveal { opacity: 1; transform: none; }
+
+/* Responsive */
+@media (max-width: 960px) {
+  .hero { padding: 40px 0 72px; }
+  .hero .wrap, .film, .feature { grid-template-columns: 1fr; gap: 40px; }
+  .hero-text { text-align: center; }
+  .hero-text .lede { margin-left: auto; margin-right: auto; }
+  .hero-text .cta { justify-content: center; }
+  .feature.flip .feature-text { order: 0; }
+  .feature { padding: 44px 0; }
+  .values, .steps, .support { grid-template-columns: 1fr; }
+  .more { grid-template-columns: 1fr 1fr; }
+  section { padding: 72px 0; }
+  .film .phone { margin: 0 auto; }
+}
+@media (max-width: 560px) {
+  .wrap { padding: 0 16px; }
+  .more, .plans { grid-template-columns: 1fr; }
+  .journey { width: 44%; left: -2%; }
+  .video-toggle { right: 4px; }
+  body { font-size: 16px; }
+}
 </style>
 </head>
-<body>
-<main>
+<body class="no-js">
+<div class="sky" aria-hidden="true"></div>
 
-<h1>머플</h1>
-<p class="muted">가족이 함께 쓰는 자산·현금흐름 대시보드</p>
-<div class="panel">
-<h2>문의</h2>
-<p>앱의 설정 › 문의에서 보내 주시면 앱 안에서 답변을 받을 수 있어요. 로그인하기 어려운 경우에는 <a href="https://playcode365.github.io/contact/">PlayCode365 문의하기</a>로 연락해 주세요.</p>
-<h2>구독</h2>
-<p>구독 취소와 변경은 iPhone 설정 › Apple 계정 › 구독에서 할 수 있어요. 환불은 Apple(reportaproblem.apple.com)에 요청해 주세요.</p>
-<h2>계정 삭제</h2>
-<p>앱의 설정 › 계정 › 계정 삭제에서 바로 지울 수 있어요. App Store 구독은 계정을 지워도 자동으로 취소되지 않으니 먼저 취소해 주세요.</p>
-</div>
-<nav class="links">
-<a href="privacy/">개인정보 처리방침</a>
-<a href="terms/">이용약관</a>
-</nav>
-<footer class="muted">© PlayCode365 · 머플</footer>
+<header class="nav" id="top">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="머플 처음으로">
+      <img src="assets/favicon.png" alt="" width="32" height="32">
+      <span>머플 <small>Mupple</small></span>
+    </a>
+    <nav class="nav-links" aria-label="페이지 안 이동">
+      <a href="#why">왜 머플인가</a>
+      <a href="#features">기능</a>
+      <a href="#plans">플랜</a>
+      <a href="#support">지원</a>
+    </nav>
+    <a class="btn btn-primary" href="https://apps.apple.com/app/id6833055435">App Store</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-text">
+        <span class="eyebrow"><i></i>맞벌이·신혼부부를 위한 자산 관리</span>
+        <h1 id="hero-title">우리 집 자산,<br><span class="soft">가족이 함께</span> 봐요.</h1>
+        <p class="lede">통장·주식·집·대출을 한 화면에 모아 순자산과 이번 달 저축률을 보여 줘요. 한 사람이 기록하면 가족 모두의 iPhone, iPad, Mac에 바로 맞춰져요.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://apps.apple.com/app/id6833055435">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c.03 2.9 2.54 3.87 2.57 3.88-.02.07-.4 1.38-1.33 2.73-.8 1.17-1.63 2.33-2.94 2.36-1.29.02-1.7-.77-3.17-.77-1.47 0-1.93.75-3.15.79-1.26.05-2.22-1.26-3.03-2.42-1.65-2.38-2.9-6.73-1.22-9.66.84-1.46 2.33-2.38 3.95-2.4 1.24-.03 2.4.83 3.16.83.75 0 2.17-1.03 3.66-.88.62.03 2.37.25 3.5 1.9-.1.06-2.08 1.22-2.06 3.64zM13.97 5.5c.67-.81 1.12-1.94 1-3.07-.97.04-2.14.64-2.83 1.45-.62.72-1.17 1.87-1.02 2.97 1.08.08 2.18-.55 2.85-1.35z"/></svg>
+            App Store에서 무료로 받기
+          </a>
+          <a class="btn btn-glass" href="#film">영상으로 보기</a>
+        </div>
+        <p class="platforms">iPhone · iPad · Mac &nbsp;·&nbsp; 한국어 · English · 日本語</p>
+      </div>
+      <div class="hero-visual">
+        <div class="moonglow" aria-hidden="true"></div>
+        <div class="phone">
+          <img src="assets/screen-home.webp" alt="머플 홈 화면: 총 자산 13억 5,582만원, 순자산 추이 그래프와 자산 구성" width="600" height="1304" fetchpriority="high">
+        </div>
+        <img class="journey" src="assets/journey.webp" alt="" width="620" height="762">
+      </div>
+    </div>
+  </section>
+
+  <section id="why" aria-labelledby="why-title">
+    <div class="wrap">
+      <div class="center reveal">
+        <p class="kicker">왜 머플인가</p>
+        <h2 id="why-title">영수증 대신,<br>우리 집이 어디쯤 왔는지.</h2>
+        <p class="sub">머플은 하루하루의 결제를 쫓는 가계부가 아니에요. 한 달에 한 번 칸을 채우면 우리 집 순자산이 어떻게 자라는지 가족이 같은 숫자로 봐요.</p>
+      </div>
+      <div class="values">
+        <article class="value glass reveal">
+          <span class="no">01</span>
+          <h3>둘이 보는 하나의 장부</h3>
+          <p>초대 코드로 가족을 부르면 같은 프로젝트를 함께 보고 고쳐요. 누가 언제 무엇을 바꿨는지 변경 기록이 1년 동안 남고, 가족이 기록을 바꾸면 알림으로 알려 줘요.</p>
+        </article>
+        <article class="value glass reveal">
+          <span class="no">02</span>
+          <h3>흐름이 보이는 숫자</h3>
+          <p>수입과 지출 칸만 채우면 저축은 주식·현금 입출금과 대출 원금 상환에서 자동으로 계산돼요. 저축률과 지난달 대비 지출 변화가 바로 보여요.</p>
+        </article>
+        <article class="value glass reveal">
+          <span class="no">03</span>
+          <h3>우리 기록은 우리 것</h3>
+          <p>은행이나 증권사와 연결하지 않고 직접 입력해요. 광고와 추적이 없고, 엑셀과 JSON으로 언제든 내보낼 수 있어요. Face ID로 앱을 잠글 수도 있어요.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="film" aria-labelledby="film-title">
+    <div class="wrap film">
+      <div class="reveal">
+        <div class="phone" style="margin:0 auto">
+          <video id="tour" src="assets/mupple-tour.mp4" poster="assets/poster.webp" muted loop playsinline preload="metadata" aria-label="머플 앱 화면 둘러보기 영상: 시작 화면, 홈, 현금흐름, 인사이트, 자산, 캘린더, 변경 기록"></video>
+          <button class="video-toggle" id="tour-toggle" type="button" aria-label="영상 재생">
+            <svg id="ico-play" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z"/></svg>
+            <svg id="ico-pause" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" hidden><path d="M3.5 2h3v12h-3zM9.5 2h3v12h-3z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="kicker">20초 둘러보기</p>
+        <h2 id="film-title">탭 다섯 개면<br>우리 집이 다 보여요.</h2>
+        <p class="sub">예시 가족의 기록으로 찍은 실제 앱 화면이에요. 앱에서도 로그인 전에 "먼저 둘러보기"로 똑같이 구경할 수 있어요.</p>
+        <ul class="film-steps">
+          <li><b>홈</b>총 자산·순자산 추이와 자산 구성</li>
+          <li><b>현금흐름</b>이번 달 수입·지출·저축과 저축률</li>
+          <li><b>인사이트</b>항목과 기간을 골라 보는 합계와 추이</li>
+          <li><b>자산</b>주식·부동산·현금·대출을 계좌별로</li>
+          <li><b>캘린더</b>가족 공유 일정 <span class="tag">Pro</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" aria-labelledby="features-title">
+    <div class="wrap">
+      <div class="center reveal">
+        <p class="kicker">주요 기능</p>
+        <h2 id="features-title">기록은 가볍게, 보는 건 한눈에.</h2>
+      </div>
+
+      <div class="feature">
+        <div class="feature-text reveal">
+          <h3>한눈에 보는 우리 집 자산</h3>
+          <p>총 자산과 순자산이 달마다 어떻게 변했는지 그래프로 봐요.</p>
+          <ul class="ticks">
+            <li>부동산·주식·현금·대출이 전체에서 얼마를 차지하는지 한 줄로</li>
+            <li>부동산에 연결된 대출은 '지분'과 '대출'로 나눠서</li>
+            <li>주식은 원금과 평가금을 나란히, 총 자산에 어느 쪽으로 넣을지는 가족이 함께 정해요</li>
+          </ul>
+        </div>
+        <div class="feature-visual reveal"><div class="phone sm"><img src="assets/screen-stocks.webp" alt="자산 탭의 주식 화면: 평가금 2억 300만원과 추이, 계좌별 평가금" width="600" height="1304" loading="lazy"></div></div>
+      </div>
+
+      <div class="feature flip">
+        <div class="feature-text reveal">
+          <h3>이번 달 현금흐름</h3>
+          <p>사람별·종류별 수입(월급, 보너스, 부수입)과 항목별 지출을 칸에 채우기만 하면 돼요.</p>
+          <ul class="ticks">
+            <li>저축은 주식·현금 입출금과 대출 원금 상환에서 자동 계산</li>
+            <li>저축률과 지난달 대비 지출 변화를 바로 알려 줘요</li>
+            <li>지난달 지출 복사, 이번 달 금액 초기화로 매달 입력이 간단해요</li>
+          </ul>
+        </div>
+        <div class="feature-visual reveal"><div class="phone sm"><img src="assets/screen-cashflow.webp" alt="현금흐름 화면: 수입 967만원, 지출 385만원, 저축 275만원, 저축률 28.4%" width="600" height="1304" loading="lazy"></div></div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-text reveal">
+          <h3>인사이트와 전국 가구와 비교</h3>
+          <p>"올해 수입", "최근 12개월 순자산", "작년 대출 이자"처럼 항목과 기간을 골라 합계와 추이를 봐요.</p>
+          <ul class="ticks">
+            <li>"우리 집 자산은 상위 몇 %일까요?" 국가 통계(가계금융복지조사)와 견줘 봐요</li>
+            <li>우리 집 순위는 기기 안에서만 계산해요</li>
+          </ul>
+        </div>
+        <div class="feature-visual reveal"><div class="phone sm"><img src="assets/screen-insights.webp" alt="인사이트 화면: 올해 수입 5,962만원과 월별 막대 그래프" width="600" height="1304" loading="lazy"></div></div>
+      </div>
+
+      <div class="feature flip">
+        <div class="feature-text reveal">
+          <h3>가족이 함께</h3>
+          <p>초대 코드로 가족을 초대하면 같은 장부를 함께 보고 고쳐요.</p>
+          <ul class="ticks">
+            <li>누가 언제 무엇을 바꿨는지 변경 기록이 1년 동안 남아요</li>
+            <li>가족이 기록을 바꾸면 알림으로 알려 줘요(설정에서 끌 수 있어요)</li>
+            <li>인터넷이 없어도 기록하고, 연결되면 자동으로 맞춰져요</li>
+          </ul>
+        </div>
+        <div class="feature-visual reveal"><div class="phone sm"><img src="assets/screen-history.webp" alt="변경 기록 화면: 가족이 오늘 바꾼 기록 목록" width="600" height="1304" loading="lazy"></div></div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-text reveal">
+          <h3>가족 공유 캘린더 <span class="tag">Pro</span></h3>
+          <p>관리비 납부일, 수영 강습처럼 가족이 함께 챙길 일정을 한 달력에 적어요.</p>
+          <ul class="ticks">
+            <li>매주·매달·매년 반복 일정과 D-day</li>
+            <li>일정 당일 알림</li>
+            <li>홈에서 7일 안의 다가오는 일정을 바로 확인</li>
+          </ul>
+        </div>
+        <div class="feature-visual reveal"><div class="phone sm"><img src="assets/screen-family.webp" alt="캘린더 화면: 2026년 11월 달력과 고른 날의 일정, 반복 일정" width="600" height="1304" loading="lazy"></div></div>
+      </div>
+
+      <div class="more">
+        <div class="glass reveal"><h4>위젯</h4><p>홈 화면과 잠금 화면에서 앱을 열지 않아도 총 자산과 이번 달 흐름을 봐요.</p></div>
+        <div class="glass reveal"><h4>엑셀 가져오기</h4><p>쓰던 엑셀 가계부를 그대로 가져올 수 있어요.</p></div>
+        <div class="glass reveal"><h4>사용 가이드</h4><p>처음 시작할 때 어떤 기록을 적으면 되는지 알려 줘요.</p></div>
+        <div class="glass reveal"><h4>앱 잠금</h4><p>Face ID·Touch ID 또는 기기 암호로 가족의 기록을 지켜요.</p></div>
+        <div class="glass reveal"><h4>세 가지 언어, 세 가지 통화</h4><p>한국어·영어·일본어로 쓰고, 통화는 원·엔·달러 중에서 골라요.</p></div>
+        <div class="glass reveal"><h4>밤하늘과 색상 테마</h4><p>밤하늘·그래파이트는 누구나, 앰버·로즈·라벤더·세이지·오션은 Pro에서.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="center reveal">
+        <p class="kicker">시작하기</p>
+        <h2 id="how-title">세 단계면 충분해요.</h2>
+      </div>
+      <div class="steps">
+        <div class="step glass reveal"><h4>로그인</h4><p>Apple 또는 Google로 계속하기. 로그인 전에 예시 가족으로 먼저 둘러볼 수도 있어요.</p></div>
+        <div class="step glass reveal"><h4>가족 초대</h4><p>프로젝트를 만들고 초대 코드를 보내면 가족이 같은 장부에 들어와요.</p></div>
+        <div class="step glass reveal"><h4>매달 칸 채우기</h4><p>계좌와 대출을 적고 매달 수입·지출 칸을 채우면 저축과 순자산은 머플이 계산해요.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plans" aria-labelledby="plans-title">
+    <div class="wrap">
+      <div class="center reveal">
+        <p class="kicker">플랜</p>
+        <h2 id="plans-title">한 명이 구독하면<br>가족 모두가 Pro.</h2>
+      </div>
+      <div class="plans">
+        <div class="plan glass reveal">
+          <h3>Basic</h3>
+          <p class="price">무료</p>
+          <p class="note">기록 100개까지(약 3개월 분량)</p>
+          <ul class="ticks">
+            <li>홈·자산·현금흐름·인사이트</li>
+            <li>가족 초대와 변경 기록·알림</li>
+            <li>위젯, 엑셀·JSON 내보내기</li>
+            <li>밤하늘·그래파이트 테마</li>
+          </ul>
+        </div>
+        <div class="plan pro glass reveal">
+          <h3>머플 Pro</h3>
+          <p class="price num">1,000원<small> / 월</small></p>
+          <p class="note num">또는 연 9,900원 · 부가세 포함</p>
+          <ul class="ticks">
+            <li>기록 수 제한 없음</li>
+            <li>가족 공유 캘린더와 일정 당일 알림</li>
+            <li>앰버·로즈·라벤더·세이지·오션 색상 테마</li>
+            <li>같은 프로젝트의 가족 모두에게 적용</li>
+          </ul>
+        </div>
+      </div>
+      <p class="fineprint">구입 화면에 표시되는 가격이 우선해요. 결제는 Apple 계정으로 이뤄지고, 기간이 끝나기 24시간 전까지 취소하지 않으면 자동으로 갱신돼요.</p>
+    </div>
+  </section>
+
+  <section id="support" aria-labelledby="support-title">
+    <div class="wrap">
+      <div class="reveal">
+        <p class="kicker">지원</p>
+        <h2 id="support-title">도움이 필요하세요?</h2>
+      </div>
+      <div class="support">
+        <div class="glass reveal">
+          <h3>문의</h3>
+          <p>앱의 설정 › 문의에서 보내 주시면 앱 안에서 답변을 받을 수 있어요. 로그인하기 어려운 경우에는 <a href="https://playcode365.com/contact/">PlayCode365 문의하기</a>로 연락해 주세요.</p>
+        </div>
+        <div class="glass reveal">
+          <h3>구독</h3>
+          <p>구독 취소와 변경은 iPhone 설정 › Apple 계정 › 구독에서 할 수 있어요. 환불은 Apple(reportaproblem.apple.com)에 요청해 주세요.</p>
+        </div>
+        <div class="glass reveal">
+          <h3>계정 삭제</h3>
+          <p>앱의 설정 › 계정 › 계정 삭제에서 바로 지울 수 있어요. App Store 구독은 계정을 지워도 자동으로 취소되지 않으니 먼저 취소해 주세요.</p>
+        </div>
+      </div>
+      <div class="legal-links reveal">
+        <a class="btn btn-glass" href="privacy/">개인정보 처리방침</a>
+        <a class="btn btn-glass" href="terms/">이용약관</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="final" aria-labelledby="final-title">
+    <div class="wrap reveal">
+      <img src="assets/icon-512.png" alt="" width="96" height="96" loading="lazy">
+      <h2 id="final-title">오늘 밤, 우리 집 자산부터<br>함께 적어 볼까요?</h2>
+      <p class="sub" style="margin:0 auto 32px">Basic은 무료예요. 먼저 둘러보기로 예시 가족을 구경해 보세요.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://apps.apple.com/app/id6833055435">App Store에서 받기</a>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <span>© PlayCode365 · 머플 · Mupple · モプル</span>
+    <nav aria-label="바닥글">
+      <a href="support/">지원</a>
+      <a href="privacy/">개인정보 처리방침</a>
+      <a href="terms/">이용약관</a>
+      <a href="https://playcode365.com/">PlayCode365</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  document.body.classList.remove('no-js');
+  var nav = document.querySelector('.nav');
+  var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  var items = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  } else { items.forEach(function (el) { el.classList.add('in'); }); }
+
+  var video = document.getElementById('tour');
+  var toggle = document.getElementById('tour-toggle');
+  var play = document.getElementById('ico-play'), pause = document.getElementById('ico-pause');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var userPaused = reduce;
+  function sync() {
+    var playing = !video.paused;
+    play.hidden = playing; pause.hidden = !playing;
+    toggle.setAttribute('aria-label', playing ? '영상 일시정지' : '영상 재생');
+  }
+  video.addEventListener('play', sync); video.addEventListener('pause', sync);
+  toggle.addEventListener('click', function () {
+    if (video.paused) { userPaused = false; video.play(); } else { userPaused = true; video.pause(); }
+  });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && !userPaused) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
+        else if (!e.isIntersecting && !video.paused) { video.pause(); }
+      });
+    }, { threshold: 0.35 }).observe(video);
+  }
+  sync();
+})();
+</script>
 </body>
 </html>
